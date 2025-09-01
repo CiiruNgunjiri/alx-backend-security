@@ -48,6 +48,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+     # Your custom IP blocking middleware runs early to block requests ASAP
+    'ip_tracking.middleware.BlockingMiddleware',
+    # Your IP logging middleware runs after blocking, to log allowed requests
     'ip_tracking.middleware.IPLoggingMiddleware',
 ]
 
@@ -123,3 +126,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+IP_GEOLOCATION_SETTINGS = {
+    'BACKEND_API_KEY': '8448b261717fbf2adc3ecc31fb965b37',
+    'ENABLE_REQUEST_HOOK': True,
+    'ENABLE_RESPONSE_HOOK': False,
+}
