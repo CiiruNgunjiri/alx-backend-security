@@ -132,3 +132,14 @@ IP_GEOLOCATION_SETTINGS = {
     'ENABLE_REQUEST_HOOK': True,
     'ENABLE_RESPONSE_HOOK': False,
 }
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',  # Use django-redis package
+        'LOCATION': 'redis://127.0.0.1:6379/1',      # Redis server URL and DB index
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            # Optional password or other options can be added here
+        }
+    }
+}
