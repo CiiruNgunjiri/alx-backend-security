@@ -27,7 +27,7 @@ class BlockingMiddleware:
 class IPLoggingMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-        self.geoip = GeoIP2()
+        self.geoip = GeoIP2(settings.GEOIP_PATH)
         
     def __call__(self, request):
          # Debug print to verify middleware is being called
