@@ -91,4 +91,5 @@ Thumbs.db
 # Celery
 celerybeat-schedule.*
 
-
+GeoLite2-City_*/
+GeoLite2-City.tar.gz
