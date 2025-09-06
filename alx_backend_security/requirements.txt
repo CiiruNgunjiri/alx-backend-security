@@ -67,6 +67,7 @@ propcache==0.3.2
 psycopg2-binary==2.9.10
 Pygments==2.19.2
 PyJWT==2.10.1
+PyMySQL==1.1.2
 pyngrok==7.3.0
 python-crontab==3.3.0
 python-dateutil==2.9.0.post0

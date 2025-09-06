@@ -5,6 +5,7 @@ from django.http import HttpResponseForbidden
 from django.conf import settings
 from django.core.cache import cache
 from django.contrib.gis.geoip2 import GeoIP2
+from django.utils.deprecation import MiddlewareMixin
 
 CACHE_TTL = 60 * 60 * 24  # 24 hours in seconds
 
@@ -71,4 +72,18 @@ class IPLoggingMiddleware:
             # Silently ignore errors in logging
             pass
         
+        return response
+
+class GeoIPMiddleware(MiddlewareMixin):
+    def __init__(self, get_response=None):
+        self.get_response = get_response
+        self.geoip = GeoIP2()
+
+    def __call__(self, request):
+        ip = request.META.get('REMOTE_ADDR')
+        if ip:
+            request.geoip_location = self.geoip.city(ip)
+        else:
+            request.geoip_location = None
+        response = self.get_response(request)
         return response

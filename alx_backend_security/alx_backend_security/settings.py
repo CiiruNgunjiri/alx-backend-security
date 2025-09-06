@@ -15,10 +15,12 @@ from celery.schedules import crontab
 import os
 from dotenv import load_dotenv
 import dj_database_url
+import environ
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 env_path = load_dotenv(os.path.join(BASE_DIR, '.env'))
 load_dotenv(env_path)
@@ -71,7 +73,7 @@ ROOT_URLCONF = 'alx_backend_security.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -90,10 +92,16 @@ WSGI_APPLICATION = 'alx_backend_security.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+print("DEBUG: NAME env var is:", os.getenv('NAME'))
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('NAME', 'alx_backend_security_db'),
+	    'USER': os.getenv('USER'),
+	    'PASSWORD': os.getenv('PASSWORD'),
+    	'HOST': 'localhost',
+	    'PORT': '3306',
     }
 }
 
@@ -133,7 +141,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 # The absolute path to the directory where collectstatic will collect static files for deployment.
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # The URL to use when referring to static files (where they will be served from)
 STATIC_URL = '/static/'
@@ -144,7 +152,7 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 IP_GEOLOCATION_SETTINGS = {
-    'BACKEND_API_KEY': '8448b261717fbf2adc3ecc31fb965b37',
+    'BACKEND_API_KEY': os.getenv('BACKEND_API_KEY'),
     'ENABLE_REQUEST_HOOK': True,
     'ENABLE_RESPONSE_HOOK': False,
 }
@@ -160,8 +168,14 @@ CACHES = {
     }
 }
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+# CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
+# CELERY_RESULT_BACKEND = 'rpc://'
+
+CELERY_BROKER_URL = os.getenv('REDIS_URL','redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
 
 CELERY_BEAT_SCHEDULE = {

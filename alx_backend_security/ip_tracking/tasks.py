@@ -12,7 +12,7 @@ def flag_suspicious_ips():
                        .filter(timestamp__gte=one_hour_ago)
                        .values('ip_address')
                        .annotate(request_count=Count('id'))
-                       .filter(request_count__gt=100)
+                       .filter(request_count__gt=5)
                        .values_list('ip_address', flat=True))
 
     # Query for IPs accessing sensitive paths '/admin' or '/login' in the last hour
@@ -28,7 +28,7 @@ def flag_suspicious_ips():
     for ip in flagged_ips:
         reasons = []
         if ip in high_volume_ips:
-            reasons.append('Exceeded 100 requests per hour')
+            reasons.append('Exceeded 5 requests per hour')
         if ip in sensitive_access_ips:
             reasons.append('Accessed sensitive path')
 
